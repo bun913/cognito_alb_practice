@@ -50,3 +50,10 @@ module "web_app" {
 
   tags = var.tags
 }
+
+module "auth" {
+  source = "./modules/auth/"
+
+  prefix = local.default_prefix
+  tags   = var.tags
+}
