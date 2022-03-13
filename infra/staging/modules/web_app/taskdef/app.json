@@ -1,0 +1,27 @@
+[
+  {
+    "name"      : "color",
+    "image"     : "${ECR_REPO}:v1",
+    "essential": true,
+    "portMappings": [
+      {
+        "containerPort": 8080,
+        "hostPort": 8080
+      }
+    ],
+    "environment": [
+      {
+        "name" : "APP_COLOR",
+        "value" : "blue"
+      }
+    ],
+    "logConfiguration": {
+      "logDriver": "awslogs",
+      "options": {
+        "awslogs-group"         : "${APP_LOG_GROUP}",
+        "awslogs-region"        :"${REGION}",
+        "awslogs-stream-prefix": "/ecs/"
+      }
+    }
+  }
+]
