@@ -27,6 +27,10 @@ variable "vpc_endpoint" {
   type        = map(any)
   description = "vpc_endpoint_setting"
 }
+variable "root_domain" {
+  type        = string
+  description = "Domain For ALB"
+}
 variable "tags" {
   type = map(string)
   default = {

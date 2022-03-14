@@ -37,6 +37,10 @@ variable "ecr_base_uri" {
   type        = string
   description = "ECR Repository Base URI"
 }
+variable "acm_arn" {
+  type        = string
+  description = "ACM ARN Of Root Domain"
+}
 variable "tags" {
   type = object({
     Environment = string

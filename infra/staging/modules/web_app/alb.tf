@@ -16,14 +16,18 @@ resource "aws_lb" "app" {
   /* } */
   tags = var.tags
 }
-# NOTE: HTTPSは時間が余ったらする
+
 resource "aws_lb_listener" "http_blue" {
   load_balancer_arn = aws_lb.app.arn
   port              = "80"
   protocol          = "HTTP"
   default_action {
-    type             = "forward"
-    target_group_arn = aws_lb_target_group.app_blue.arn
+    type = "redirect"
+    redirect {
+      port        = "443"
+      protocol    = "HTTPS"
+      status_code = "HTTP_301"
+    }
   }
   tags = merge({ "Name" : "${var.prefix}-blue" }, var.tags)
   # BGデプロイで動的にtgを入れ替えるため変更を無視
@@ -33,14 +37,34 @@ resource "aws_lb_listener" "http_blue" {
     ]
   }
 }
+
+resource "aws_lb_listener" "https_blue" {
+  load_balancer_arn = aws_lb.app.arn
+  port              = "443"
+  protocol          = "HTTPS"
+  ssl_policy        = "ELBSecurityPolicy-2016-08"
+  certificate_arn   = var.acm_arn
+
+  default_action {
+    type             = "forward"
+    target_group_arn = aws_lb_target_group.app_blue.arn
+  }
+}
+
 resource "aws_lb_listener" "http_green" {
   load_balancer_arn = aws_lb.app.arn
   port              = "8080"
   protocol          = "HTTP"
+
   default_action {
-    type             = "forward"
-    target_group_arn = aws_lb_target_group.app_green.arn
+    type = "redirect"
+    redirect {
+      port        = "443"
+      protocol    = "HTTPS"
+      status_code = "HTTP_301"
+    }
   }
+
   tags = merge({ "Name" : "${var.prefix}-blue" }, var.tags)
   lifecycle {
     ignore_changes = [
@@ -53,27 +77,7 @@ resource "aws_lb_target_group" "app_blue" {
   name                 = "${var.prefix}-tg-blue"
   deregistration_delay = 60
   port                 = 8080
-  protocol             = "HTTP"
-  target_type          = "ip"
-  vpc_id               = var.vpc_id
-  health_check {
-    healthy_threshold   = 2
-    interval            = 30
-    matcher             = 200
-    path                = "/"
-    port                = "traffic-port"
-    protocol            = "HTTP"
-    timeout             = 5
-    unhealthy_threshold = 2
-  }
-  tags = var.tags
-}
-
-resource "aws_lb_target_group" "app_green" {
-  name                 = "${var.prefix}-tg-green"
-  deregistration_delay = 60
-  port                 = 8080
-  protocol             = "HTTP"
+  protocol             = "HTTPS"
   target_type          = "ip"
   vpc_id               = var.vpc_id
   health_check {

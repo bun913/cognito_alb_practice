@@ -45,3 +45,4 @@ vpc_endpoint = {
     "com.amazonaws.ap-northeast-1.s3"
   ]
 }
+root_domain = "pr-bun.com"

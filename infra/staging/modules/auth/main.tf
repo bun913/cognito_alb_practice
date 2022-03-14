@@ -29,6 +29,17 @@ resource "aws_cognito_user_pool" "main" {
 }
 
 resource "aws_cognito_user_pool_domain" "main" {
-  domain       = "${var.tags.Environment}-cognit-auth"
+  domain          = "auth.${var.root_domain}"
+  certificate_arn = var.acm_sub_arn
+  user_pool_id    = aws_cognito_user_pool.main.id
+}
+
+resource "aws_cognito_user_pool_client" "main" {
+  name         = "${var.prefix}-client"
   user_pool_id = aws_cognito_user_pool.main.id
+  # CallBackUrlにALBのドメイン + oauth2/idpresponseの付与が必要
+  # https://docs.aws.amazon.com/ja_jp/elasticloadbalancing/latest/application/listener-authenticate-users.html
+  /* callback_urls = [ */
+  /*   "https://${var.alb_dns_name}/oauth2/idpresponse" */
+  /* ] */
 }
