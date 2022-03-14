@@ -44,6 +44,7 @@ module "web_app" {
   vpc_cidr               = var.vpc_cidr
   interface_services     = var.vpc_endpoint.interface
   gateway_services       = var.vpc_endpoint.gateway
+  acm_arn                = module.cert.acm_arn
 
   ecr_base_uri = local.ecr_base_uri
   region       = var.region
@@ -51,9 +52,17 @@ module "web_app" {
   tags = var.tags
 }
 
+module "cert" {
+  source = "./modules/cert/"
+
+  root_domain = var.root_domain
+}
 module "auth" {
   source = "./modules/auth/"
 
-  prefix = local.default_prefix
-  tags   = var.tags
+  prefix      = local.default_prefix
+  root_domain = var.root_domain
+  acm_sub_arn = module.cert.acm_sub_arn
+
+  tags = var.tags
 }
