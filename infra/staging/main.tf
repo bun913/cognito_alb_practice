@@ -52,6 +52,15 @@ module "web_app" {
   tags = var.tags
 }
 
+module "dns" {
+  source = "./modules/dns/"
+
+  prefix      = local.default_prefix
+  root_domain = var.root_domain
+
+  tags = var.tags
+}
+
 module "cert" {
   source = "./modules/cert/"
 
