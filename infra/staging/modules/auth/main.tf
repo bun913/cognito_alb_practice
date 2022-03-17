@@ -28,6 +28,7 @@ resource "aws_cognito_user_pool" "main" {
   tags = var.tags
 }
 
+# TODO: NSレコードの移管が終了してから再度試す
 resource "aws_cognito_user_pool_domain" "main" {
   domain          = "auth.${var.root_domain}"
   certificate_arn = var.acm_sub_arn
@@ -35,11 +36,21 @@ resource "aws_cognito_user_pool_domain" "main" {
 }
 
 resource "aws_cognito_user_pool_client" "main" {
-  name         = "${var.prefix}-client"
-  user_pool_id = aws_cognito_user_pool.main.id
+  name            = "${var.prefix}-client"
+  user_pool_id    = aws_cognito_user_pool.main.id
+  generate_secret = true
   # CallBackUrlにALBのドメイン + oauth2/idpresponseの付与が必要
-  # https://docs.aws.amazon.com/ja_jp/elasticloadbalancing/latest/application/listener-authenticate-users.html
-  /* callback_urls = [ */
-  /*   "https://${var.alb_dns_name}/oauth2/idpresponse" */
-  /* ] */
+  callback_urls = [
+    "https://${var.root_domain}/oauth2/idpresponse"
+  ]
+  allowed_oauth_flows = ["code"]
+  explicit_auth_flows = [
+    "ALLOW_REFRESH_TOKEN_AUTH",
+    "ALLOW_USER_PASSWORD_AUTH",
+  ]
+  supported_identity_providers = [
+    "COGNITO"
+  ]
+  allowed_oauth_scopes                 = ["openid"]
+  allowed_oauth_flows_user_pool_client = true
 }

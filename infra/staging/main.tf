@@ -46,6 +46,10 @@ module "web_app" {
   gateway_services       = var.vpc_endpoint.gateway
   acm_arn                = module.cert.acm_arn
 
+  user_pool_arn     = module.auth.user_pool_arn
+  cognito_client_id = module.auth.cognito_client_id
+  cognito_domain    = module.auth.cognito_domain
+
   ecr_base_uri = local.ecr_base_uri
   region       = var.region
 
@@ -60,6 +64,7 @@ module "dns" {
   alb_dns_name                  = module.web_app.alb_dns_name
   alb_zone_id                   = module.web_app.alb_zone_id
   acm_main_domain_valid_options = module.cert.acm_main_domain_valid_options
+  acm_sub_domain_valid_options  = module.cert.acm_sub_domain_valid_options
 
   tags = var.tags
 }
