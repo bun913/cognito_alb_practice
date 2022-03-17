@@ -18,6 +18,10 @@ variable "acm_main_domain_valid_options" {
   type        = set(any)
   description = "RootDomain ACM Valid Required Records"
 }
+variable "acm_sub_domain_valid_options" {
+  type        = set(any)
+  description = "SubDomain ACM Valid Required Records"
+}
 variable "tags" {
   type = object({
     Environment = string

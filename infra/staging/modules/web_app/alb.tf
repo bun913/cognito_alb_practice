@@ -48,28 +48,34 @@ resource "aws_lb_listener" "https_blue" {
   default_action {
     type             = "forward"
     target_group_arn = aws_lb_target_group.app_blue.arn
+    authenticate_cognito {
+      user_pool_arn       = var.user_pool_arn
+      user_pool_client_id = var.cognito_client_id
+      user_pool_domain    = var.cognito_domain
+    }
   }
 }
 
-resource "aws_lb_listener" "http_green" {
-  load_balancer_arn = aws_lb.app.arn
-  port              = "8080"
-  protocol          = "HTTP"
+resource "aws_lb_listener_rule" "auth" {
+  listener_arn = aws_lb_listener.https_blue.arn
+  priority     = 100
+  action {
+    type = "authenticate-cognito"
 
-  default_action {
-    type = "redirect"
-    redirect {
-      port        = "443"
-      protocol    = "HTTPS"
-      status_code = "HTTP_301"
+    authenticate_cognito {
+      user_pool_arn       = var.user_pool_arn
+      user_pool_client_id = var.cognito_client_id
+      user_pool_domain    = var.cognito_domain
     }
   }
-
-  tags = merge({ "Name" : "${var.prefix}-blue" }, var.tags)
-  lifecycle {
-    ignore_changes = [
-      default_action
-    ]
+  action {
+    type             = "forward"
+    target_group_arn = aws_lb_target_group.app_blue.arn
+  }
+  condition {
+    path_pattern {
+      values = ["/*"]
+    }
   }
 }
 
