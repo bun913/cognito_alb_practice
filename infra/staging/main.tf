@@ -61,6 +61,7 @@ module "dns" {
 
   prefix                        = local.default_prefix
   root_domain                   = var.root_domain
+  host_zone_id                  = var.host_zone_id
   alb_dns_name                  = module.web_app.alb_dns_name
   alb_zone_id                   = module.web_app.alb_zone_id
   acm_main_domain_valid_options = module.cert.acm_main_domain_valid_options
