@@ -46,3 +46,4 @@ vpc_endpoint = {
   ]
 }
 root_domain = "pr-bun.com"
+# TODO: hosto_zone_id = "hoge" が必要(globalでroute53のホストゾーンを作成してここにidを用意しておく)
