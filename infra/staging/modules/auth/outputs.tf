@@ -7,3 +7,6 @@ output "cognito_client_id" {
 output "cognito_domain" {
   value = aws_cognito_user_pool_domain.main.domain
 }
+output "congnito_domain_cname_value" {
+  value = aws_cognito_user_pool_domain.main.cloudfront_distribution_arn
+}

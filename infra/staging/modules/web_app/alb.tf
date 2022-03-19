@@ -48,11 +48,6 @@ resource "aws_lb_listener" "https_blue" {
   default_action {
     type             = "forward"
     target_group_arn = aws_lb_target_group.app_blue.arn
-    authenticate_cognito {
-      user_pool_arn       = var.user_pool_arn
-      user_pool_client_id = var.cognito_client_id
-      user_pool_domain    = var.cognito_domain
-    }
   }
 }
 
@@ -83,7 +78,7 @@ resource "aws_lb_target_group" "app_blue" {
   name                 = "${var.prefix}-tg-blue"
   deregistration_delay = 60
   port                 = 8080
-  protocol             = "HTTPS"
+  protocol             = "HTTP"
   target_type          = "ip"
   vpc_id               = var.vpc_id
   health_check {

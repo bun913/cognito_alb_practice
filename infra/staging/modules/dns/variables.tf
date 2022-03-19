@@ -27,6 +27,10 @@ variable "acm_sub_domain_valid_options" {
   type        = set(any)
   description = "SubDomain ACM Valid Required Records"
 }
+variable "congnito_domain_cname_value" {
+  type        = string
+  description = "Cognito Custom Domain Cname Value"
+}
 variable "tags" {
   type = object({
     Environment = string

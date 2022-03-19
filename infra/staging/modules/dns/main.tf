@@ -51,3 +51,13 @@ resource "aws_route53_record" "cert_validation_sub" {
 
   zone_id = var.host_zone_id
 }
+
+resource "aws_route53_record" "cognito_auth_cname" {
+  allow_overwrite = true
+  name            = "auth.${var.root_domain}"
+  records         = [var.congnito_domain_cname_value]
+  type            = "CNAME"
+  ttl             = "300"
+
+  zone_id = var.host_zone_id
+}
