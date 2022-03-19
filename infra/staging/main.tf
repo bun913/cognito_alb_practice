@@ -67,6 +67,8 @@ module "dns" {
   acm_main_domain_valid_options = module.cert.acm_main_domain_valid_options
   acm_sub_domain_valid_options  = module.cert.acm_sub_domain_valid_options
 
+  congnito_domain_cname_value = module.auth.congnito_domain_cname_value
+
   tags = var.tags
 }
 
