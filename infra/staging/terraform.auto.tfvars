@@ -45,5 +45,5 @@ vpc_endpoint = {
     "com.amazonaws.ap-northeast-1.s3"
   ]
 }
-root_domain = "pr-bun.com"
-# TODO: hosto_zone_id = "hoge" が必要(globalでroute53のホストゾーンを作成してここにidを用意しておく)
+# NOTE: root_domain = "hoge.com"のように所有している独自ドメインのルートドメインを記載する
+# NOTE: host_zone_id = "hoge" が必要(globalでroute53のホストゾーンを作成してここにidを用意しておく)
